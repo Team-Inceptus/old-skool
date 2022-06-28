@@ -1,2 +1,2 @@
-floppya: 1_44=stage1.bin, status=inserted
+floppya: 1_44=old_skool.bin, status=inserted
 boot: floppy

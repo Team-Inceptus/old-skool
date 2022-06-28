@@ -36,6 +36,23 @@ _start:
     mov si, disk_loaded_msg
     call print
 
+    mov si, continue_msg
+    call print
+
+    call wait_key
+
+    ;; Clear screen (set to text mode 80x25 16 bit colors).
+    xor ah, ah
+    mov al, 0x03
+    int 0x10
+
+    mov ah, 0x6             ;; Scroll up.
+    xor al, al              ;; Clear entire screen.
+    xor cx, cx              ;; Upper left corner.
+    mov dx, 0x184F          ;; Lower right corner.
+    mov bh, 0x17            ;; White on blue.
+    int 0x10
+
     cli
 
     ;; Load our GDT into GDT register.
@@ -89,6 +106,15 @@ disk_err:
     cli
     hlt
 
+wait_key:
+    xor ah, ah
+    int 0x16
+
+    cmp al, 'c'
+    jne wait_key
+
+    ret
+
 
 
 dap:
@@ -103,6 +129,7 @@ dap:
 boot_msg: db "Booting..", NEWLINE, NEWLINE, 0
 disk_loaded_msg: db 0xD, "Loaded stage2 from disk!", NEWLINE, 0
 disk_err_msg: db "FATAL: Failed to load from disk!", 0
+continue_msg: db 0xD, "PRESS 'c' TO CONTINUE!", NEWLINE, 0
 
 gdt_start:
     gdt_null:
@@ -169,8 +196,7 @@ protected_mode:
     mov ebp, 0x90000
     mov esp, ebp                ;; Point top of stack to base.
 
-    cli
-    hlt
+    jmp 0x1000
 
 ;; Some sector padding.
 times 510-($-$$) db 0

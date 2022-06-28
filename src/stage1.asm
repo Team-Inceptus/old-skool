@@ -9,11 +9,11 @@ _start:
 
 
 print:
-    mov ah, 0xE
-    lodsb
-    int 0x10
-    or al, al
-    jnz print
+    mov ah, 0xE             ;; BIOS print char function.
+    lodsb                   ;; Pseudo C for this: al = *si++
+    int 0x10                ;; BIOS video interrupt.
+    or al, al               ;; Sets zero flag if al is null terminator (zero).
+    jnz print               ;; Continue looping if al is not zero.
 
 done:
     ret

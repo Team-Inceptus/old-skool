@@ -2,6 +2,18 @@
 org 0x7C00
 
 _start:
+    ;; Clear screen (set to text mode 80x25 16 bit colors).
+    xor ah, ah
+    mov al, 0x03
+    int 0x10
+
+    mov ah, 0x6             ;; Scroll up.
+    xor al, al              ;; Clear entire screen.
+    xor cx, cx              ;; Upper left corner.
+    mov dx, 0x184F          ;; Lower right corner.
+    mov bh, 0x17            ;; White on blue.
+    int 0x10
+
     mov si, hello
     call print
     cli

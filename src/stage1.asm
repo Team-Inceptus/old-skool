@@ -1,7 +1,16 @@
+bits 16
 ;; BIOS loads our code here.
 org 0x7C00
 
 %define NEWLINE 0xD, 0xA
+
+xor ax, ax
+mov ds, ax
+mov es, ax
+mov ss, ax
+
+mov bp, 0x9C00
+mov sp, bp
 
 _start:
     mov [BOOT_DRIVE], dl
